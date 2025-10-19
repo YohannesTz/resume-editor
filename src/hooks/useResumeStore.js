@@ -73,6 +73,12 @@ function resumeReducer(state, action) {
             const [item] = draft.data.experience.splice(index, 1);
             draft.data.experience.splice(newIndex, 0, item);
         });
+    case 'REORDER_EXPERIENCE':
+        return produce(state, draft => {
+            const { dragIndex, dropIndex } = action.payload;
+            const [item] = draft.data.experience.splice(dragIndex, 1);
+            draft.data.experience.splice(dropIndex, 0, item);
+        });
     default:
       return state;
   }

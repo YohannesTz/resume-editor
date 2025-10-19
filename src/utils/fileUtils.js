@@ -21,23 +21,7 @@ export function importJSON(file, callback) {
   reader.readAsText(file);
 }
 
-export async function downloadPDF(previewRef) {
-  if (!previewRef.current) return;
 
-  const { default: html2canvas } = await import('html2canvas');
-  const { default: jsPDF } = await import('jspdf');
-
-  const el = previewRef.current;
-  const canvas = await html2canvas(el, { scale: 2, useCORS: true });
-  const imgData = canvas.toDataURL('image/png');
-  const pdf = new jsPDF({
-    orientation: 'portrait',
-    unit: 'pt',
-    format: [canvas.width, canvas.height],
-  });
-  pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-  pdf.save('resume.pdf');
-}
 
 export async function loadDefaultData(dispatch) {
     dispatch({ type: 'SET_IS_LOADING', payload: true });

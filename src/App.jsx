@@ -3,12 +3,16 @@ import Editor from './components/Editor';
 import Preview from './components/Preview';
 import { useResumeStore } from './hooks/useResumeStore';
 import { useResizablePanel } from './hooks/useResizablePanel';
-import { exportJSON, importJSON, downloadPDF, loadDefaultData } from './utils/fileUtils';
+import { useReactToPrint } from 'react-to-print';
+import { exportJSON, importJSON, loadDefaultData } from './utils/fileUtils';
 
 function App() {
   const { state, dispatch } = useResumeStore();
   const { data, isLoadingData, zoom, margins, lineHeight, letterSpacing, baseFontSize, fontFamily } = state;
   const previewRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => previewRef.current,
+  });
   const { width: leftPanelWidth, isDragging, handleMouseDown } = useResizablePanel(650, 250, window.innerWidth - 400);
 
   useEffect(() => {
@@ -16,8 +20,8 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="app" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', height: '100vh', overflow: 'hidden', width: '100vw' }}>
-      <div
+    <main className="app" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', height: '100vh', overflow: 'hidden', width: '100vw' }}>
+      <aside
         className="controls"
         style={{ width: `${leftPanelWidth}px`, minWidth: 250, maxWidth: 600, height: '100vh', overflow: 'auto', flexShrink: 0 }}
       >
@@ -65,12 +69,12 @@ function App() {
 
         {data && (
           <div style={{ marginTop: 12 }}>
-            <button className="btn" onClick={() => downloadPDF(previewRef)}>Download PDF</button>
+            <button className="btn" onClick={handlePrint}>Print / Download PDF</button>
           </div>
         )}
 
         <p className="footer-note">You can host this on Netlify. Follow instructions in README.</p>
-      </div>
+      </aside>
       <div
         className="resize-handle"
         onMouseDown={handleMouseDown}
@@ -93,7 +97,7 @@ function App() {
           }
         }}
       />
-      <div
+      <section
         className="preview-wrapper"
         style={{
           flex: 1,
@@ -108,11 +112,10 @@ function App() {
           position: 'relative',
         }}
       >
-        <div className="preview" ref={previewRef} style={{ width: 'auto' }}>
+        <div className="preview" ref={previewRef} style={{ width: 'auto', transform: `scale(${zoom})`, transformOrigin: 'top center' }}>
           {data ? (
             <Preview
               data={data}
-              zoom={zoom}
               margins={margins}
               lineHeight={lineHeight}
               letterSpacing={letterSpacing}
@@ -125,9 +128,9 @@ function App() {
             </div>
           )}
         </div>
-      </div>
+      </section>
 
-    </div>
+    </main>
   );
 }
 

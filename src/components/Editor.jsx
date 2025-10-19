@@ -2,6 +2,25 @@
 import React from "react";
 
 const Editor = ({ data, dispatch, zoom, margins, lineHeight, letterSpacing, baseFontSize, fontFamily }) => {
+    const dragItem = React.useRef(null);
+
+    function handleDragStart(e, index) {
+        dragItem.current = index;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.target);
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+    }
+
+    function handleDrop(e, index) {
+        const dragIndex = dragItem.current;
+        const dropIndex = index;
+        if (dragIndex === dropIndex) return;
+        dispatch({ type: 'REORDER_EXPERIENCE', payload: { dragIndex, dropIndex } });
+        dragItem.current = null;
+    }
     const [jsonInput, setJsonInput] = React.useState('');
     function loadJsonFromField() {
         try {
@@ -38,10 +57,10 @@ const Editor = ({ data, dispatch, zoom, margins, lineHeight, letterSpacing, base
     }
 
     return (
-        <div>
+        <form>
             {/* Settings controls */}
-            <div className="section" style={{ marginBottom: 20 }}>
-                <h3 style={{fontSize:14, margin:"8px 0 8px", color:"#6b7280"}}>Document Settings</h3>
+            <fieldset className="section" style={{ marginBottom: 20 }}>
+                <legend style={{fontSize:14, margin:"8px 0 8px", color:"#6b7280"}}>Document Settings</legend>
                 {/* JSON loader field */}
                 <div style={{marginBottom:12}}>
                   <label style={{fontSize:12}}>Paste Resume JSON</label>
@@ -53,11 +72,35 @@ const Editor = ({ data, dispatch, zoom, margins, lineHeight, letterSpacing, base
                   <span style={{minWidth:40, textAlign:'center'}}>{Math.round(zoom*100)}%</span>
                   <button type="button" className="btn ghost" onClick={()=>dispatch({ type: 'SET_ZOOM', payload: Math.min(zoom+0.1,2) })}>+</button>
                 </div>
-                <div style={{display:'flex', gap:12, flexWrap:'wrap', marginBottom:8}}>
-                  <div><label style={{fontSize:12}}>Margin Top</label><input type="number" style={{width:60}} value={margins.top} min={0} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, top: Number(e.target.value)} })} /></div>
-                  <div><label style={{fontSize:12}}>Right</label><input type="number" style={{width:60}} value={margins.right} min={0} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, right: Number(e.target.value)} })} /></div>
-                  <div><label style={{fontSize:12}}>Bottom</label><input type="number" style={{width:60}} value={margins.bottom} min={0} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, bottom: Number(e.target.value)} })} /></div>
-                  <div><label style={{fontSize:12}}>Left</label><input type="number" style={{width:60}} value={margins.left} min={0} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, left: Number(e.target.value)} })} /></div>
+                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px 24px', marginBottom:8}}>
+                  <div>
+                    <label style={{fontSize:12}}>Margin Top</label>
+                    <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                      <input type="range" style={{width:'100%'}} value={margins.top} min={0} max={100} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, top: Number(e.target.value)} })} />
+                      <input type="number" style={{width:60}} value={margins.top} min={0} max={100} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, top: Number(e.target.value)} })} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{fontSize:12}}>Margin Right</label>
+                    <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                      <input type="range" style={{width:'100%'}} value={margins.right} min={0} max={100} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, right: Number(e.target.value)} })} />
+                      <input type="number" style={{width:60}} value={margins.right} min={0} max={100} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, right: Number(e.target.value)} })} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{fontSize:12}}>Margin Bottom</label>
+                    <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                      <input type="range" style={{width:'100%'}} value={margins.bottom} min={0} max={100} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, bottom: Number(e.target.value)} })} />
+                      <input type="number" style={{width:60}} value={margins.bottom} min={0} max={100} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, bottom: Number(e.target.value)} })} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{fontSize:12}}>Margin Left</label>
+                    <div style={{display: 'flex', gap: 8, alignItems: 'center'}}>
+                      <input type="range" style={{width:'100%'}} value={margins.left} min={0} max={100} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, left: Number(e.target.value)} })} />
+                      <input type="number" style={{width:60}} value={margins.left} min={0} max={100} onChange={e=>dispatch({ type: 'SET_MARGINS', payload: {...margins, left: Number(e.target.value)} })} />
+                    </div>
+                  </div>
                 </div>
                 <div style={{display:'flex', gap:12, flexWrap:'wrap', marginBottom:8}}>
                   <div><label style={{fontSize:12}}>Font Family</label><input style={{width:180}} value={fontFamily} onChange={e=>dispatch({ type: 'SET_FONT_FAMILY', payload: e.target.value })} placeholder="e.g. Inter, Arial" /></div>
@@ -65,7 +108,7 @@ const Editor = ({ data, dispatch, zoom, margins, lineHeight, letterSpacing, base
                   <div><label style={{fontSize:12}}>Line Height</label><input type="number" step="0.05" style={{width:80}} value={lineHeight} min={1} max={2} onChange={e=>dispatch({ type: 'SET_LINE_HEIGHT', payload: Number(e.target.value) })} /></div>
                   <div><label style={{fontSize:12}}>Letter Spacing (px)</label><input type="number" step="0.1" style={{width:60}} value={letterSpacing} min={-1} max={10} onChange={e=>dispatch({ type: 'SET_LETTER_SPACING', payload: Number(e.target.value) })} /></div>
                 </div>
-            </div>
+            </fieldset>
             <label>Name</label>
             <input value={data.name || ""} onChange={e => updateField("name", e.target.value)} />
 
@@ -81,10 +124,17 @@ const Editor = ({ data, dispatch, zoom, margins, lineHeight, letterSpacing, base
             <label>Skills (comma separated)</label>
             <input value={(data.skills || []).join(", ")} onChange={e => setSkillsFromString(e.target.value)} />
 
-            <div className="section" style={{marginTop:12}}>
-                <h3 style={{fontSize:13, margin:"16px 0 8px", color:"#6b7280", letterSpacing:"0.03em"}}>Experience</h3>
+            <fieldset className="section" style={{marginTop:12}}>
+                <legend style={{fontSize:13, margin:"16px 0 8px", color:"#6b7280", letterSpacing:"0.03em"}}>Experience</legend>
                 {(data.experience || []).map((job, idx) => (
-                    <div key={idx} style={{border:"1px solid #e5e7eb", borderRadius:6, padding:10, marginBottom:10}}>
+                    <div 
+                        key={idx} 
+                        style={{border:"1px solid #e5e7eb", borderRadius:6, padding:10, marginBottom:10, cursor: 'grab'}}
+                        draggable={true}
+                        onDragStart={(e) => handleDragStart(e, idx)}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, idx)}
+                    >
                         <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8}}>
                             <strong style={{fontSize:13}}>Position #{idx+1}</strong>
                             <div>
@@ -109,8 +159,8 @@ const Editor = ({ data, dispatch, zoom, margins, lineHeight, letterSpacing, base
                     </div>
                 ))}
                 <button className="btn" onClick={addExperience}>Add Experience</button>
-            </div>
-        </div>
+            </fieldset>
+        </form>
     );
 }
 
