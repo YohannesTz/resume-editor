@@ -13,6 +13,8 @@ const initialState = {
   letterSpacing: 0,
   baseFontSize: 12,
   fontFamily: 'Inter, system-ui, -apple-system, "Segoe UI", Roboto',
+  titleColor: '#111827', // New state for title color
+  bodyColor: '#111827',  // New state for body color
 };
 
 function resumeReducer(state, action) {
@@ -25,6 +27,8 @@ function resumeReducer(state, action) {
       return { ...state, loadError: action.payload };
     case 'SET_ZOOM':
       return { ...state, zoom: action.payload };
+    case 'SET_PAN': // New action for pan
+      return { ...state, pan: action.payload };
     case 'SET_MARGINS':
       return { ...state, margins: action.payload };
     case 'SET_LINE_HEIGHT':
@@ -35,6 +39,10 @@ function resumeReducer(state, action) {
       return { ...state, baseFontSize: action.payload };
     case 'SET_FONT_FAMILY':
       return { ...state, fontFamily: action.payload };
+    case 'SET_TITLE_COLOR': // New action for title color
+      return { ...state, titleColor: action.payload };
+    case 'SET_BODY_COLOR':  // New action for body color
+      return { ...state, bodyColor: action.payload };
     case 'UPDATE_FIELD':
       return produce(state, draft => {
         const parts = action.payload.path.split('.');

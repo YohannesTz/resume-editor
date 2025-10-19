@@ -30,7 +30,7 @@ function App() {
 
 	const handlePanMouseDown = useCallback((e) => {
 		if (e.ctrlKey) {
-			e.preventDefault(); 
+			e.preventDefault();
 			setIsPanning(true);
 			setStartPan({ x: e.clientX - pan.x, y: e.clientY - pan.y });
 		}
@@ -65,55 +65,53 @@ function App() {
 	}, [dispatch]);
 
 	return (
-		<main className="app" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', height: '100vh', overflow: 'hidden', width: '100vw' }}>
-			<aside
-				className="controls"
-				style={{ width: `${leftPanelWidth}px`, minWidth: 250, maxWidth: 600, height: '100vh', overflow: 'auto', flexShrink: 0 }}
-			>
-				<h2 style={{ margin: 0 }}>Resume Editor</h2>
-				<p style={{ color: "#6b7280", fontSize: 13 }}>Edit fields below — preview updates live.</p>
+		<main className="app" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-start', height: '100vh', overflow: 'hidden', width: '100vw' }}>			<aside
+			className="controls"
+			style={{ width: `${leftPanelWidth}px`, minWidth: 250, maxWidth: 600, height: '100vh', overflow: 'auto', flexShrink: 0 }}
+		>
+			<h2 style={{ margin: 0 }}>Resume Editor</h2>
+			<p style={{ color: "#6b7280", fontSize: 13 }}>Edit fields below — preview updates live.</p>
 
-				{isLoadingData && (
-					<div style={{ fontSize: 14, color: '#6b7280' }}>Loading defaultData.json…</div>
-				)}
-				{!isLoadingData && !data && (
-					<div style={{ padding: '20px', textAlign: 'center' }}>
-						<p style={{ fontSize: 14, color: '#6b7280' }}>No data loaded. Load a JSON file to begin.</p>
-						<label className="btn" style={{ cursor: "pointer", display: 'block', width: '100%', padding: '20px 0' }}>
-							Import Resume Data
-							<input type="file" accept=".json,application/json" style={{ display: "none" }} onChange={e => {
-								if (e.target.files && e.target.files[0]) importJSON(e.target.files[0], (newData) => dispatch({ type: 'SET_DATA', payload: newData }));
-							}} />
-						</label>
-					</div>
-				)}
-				{data && (
-					<Editor
-						data={data}
-						dispatch={dispatch}
-						zoom={zoom}
-						margins={margins}
-						lineHeight={lineHeight}
-						letterSpacing={letterSpacing}
-						baseFontSize={baseFontSize}
-						fontFamily={fontFamily}
-					/>
-				)}
+			{isLoadingData && (
+				<div style={{ fontSize: 14, color: '#6b7280' }}>Loading defaultData.json…</div>
+			)}
+			{!isLoadingData && !data && (
+				<div style={{ padding: '20px', textAlign: 'center' }}>
+					<p style={{ fontSize: 14, color: '#6b7280' }}>No data loaded. Load a JSON file to begin.</p>
+					<label className="btn" style={{ cursor: "pointer", display: 'block', width: '100%', padding: '20px 0' }}>
+						Import Resume Data
+						<input type="file" accept=".json,application/json" style={{ display: "none" }} onChange={e => {
+							if (e.target.files && e.target.files[0]) importJSON(e.target.files[0], (newData) => dispatch({ type: 'SET_DATA', payload: newData }));
+						}} />
+					</label>
+				</div>
+			)}
+			{data && (
+				<Editor
+					data={data}
+					dispatch={dispatch}
+					zoom={zoom}
+					margins={margins}
+					lineHeight={lineHeight}
+					letterSpacing={letterSpacing}
+					baseFontSize={baseFontSize}
+					fontFamily={fontFamily}
+				/>
+			)}
 
-				{data && (
-					<div style={{ marginTop: 12 }}>
-						<button className="btn" onClick={() => exportJSON(data)}>Export JSON</button>
-					</div>
-				)}
+			{data && (
+				<div style={{ marginTop: 12 }}>
+					<button className="btn" onClick={() => exportJSON(data)}>Export JSON</button>
+				</div>
+			)}
 
-				{data && (
-					<div style={{ marginTop: 12 }}>
-						<button className="btn" onClick={() => handlePrint()}>Print / Download PDF</button>
-					</div>
-				)}
+			{data && (
+				<div style={{ marginTop: 12 }}>
+					<button className="btn" onClick={() => handlePrint()}>Print / Download PDF</button>
+				</div>
+			)}
 
-				<p className="footer-note">You can host this on Netlify. Follow instructions in README.</p>
-			</aside>
+		</aside>
 			<div
 				className="resize-handle"
 				onMouseDown={handleResizeMouseDown}

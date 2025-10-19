@@ -1,7 +1,6 @@
-
 import { useState, useEffect, useRef, useMemo } from 'react';
 
-export function usePagination(data, margins) {
+export function usePagination(data, margins, titleColor, bodyColor) { // Receive titleColor and bodyColor
   const [pages, setPages] = useState([]);
   const measureRef = useRef(null);
 
@@ -10,25 +9,28 @@ export function usePagination(data, margins) {
 
     const blocks = [];
 
+    // Helper to render the header block
+    const HeaderBlock = () => (
+        <header className="header" style={{ borderBottom: "2px solid #e5e7eb", paddingBottom: 8, marginBottom: 10 }}>
+            <div>
+                <div className="name" style={{ color: titleColor }}>{data.name}</div> 
+                <div style={{ color: "#6b7280", fontSize: 13 }}>{data.education?.degree ? data.education.degree + " • " + data.education?.school : ""}</div>
+            </div>
+            <div className="meta">
+                <div>{data.location}</div>
+                <div>{data.email} • {data.phone}</div>
+                {data.links?.linkedin && (
+                    <div style={{ marginTop: 6 }}><a href={data.links?.linkedin}>{data.links?.linkedin}</a></div>
+                )}
+            </div>
+        </header>
+    );
+
     // Header (not splittable)
     blocks.push({
         key: "header",
         splittable: false,
-        render: (
-            <header className="header" style={{ borderBottom: "2px solid #e5e7eb", paddingBottom: 8, marginBottom: 10 }}>
-                <div>
-                    <div className="name">{data.name}</div>
-                    <div style={{ color: "#6b7280", fontSize: 13 }}>{data.education?.degree ? data.education.degree + " • " + data.education?.school : ""}</div>
-                </div>
-                <div className="meta">
-                    <div>{data.location}</div>
-                    <div>{data.email} • {data.phone}</div>
-                    {data.links?.linkedin && (
-                        <div style={{ marginTop: 6 }}><a href={data.links?.linkedin}>{data.links?.linkedin}</a></div>
-                    )}
-                </div>
-            </header>
-        )
+        render: <HeaderBlock />,
     });
 
     // Skills
@@ -37,8 +39,8 @@ export function usePagination(data, margins) {
         splittable: false,
         render: (
             <section className="section">
-                <h3>Skills</h3>
-                <div className="skills-list">
+                <h3 style={{ color: titleColor }}>Skills</h3> 
+                <div className="skills-list" style={{ color: bodyColor }}> 
                     {(data.skills || []).map((s, i) => <div key={i} className="badge">{s}</div>)}
                 </div>
             </section>
@@ -52,11 +54,11 @@ export function usePagination(data, margins) {
             splittable: false,
             render: (
                 <section className="section">
-                    <h3>Education</h3>
-                    <div style={{ fontWeight: 600 }}>{data.education?.degree}</div>
-                    <div className="meta">{data.education?.school} • {data.education?.year}</div>
+                    <h3 style={{ color: titleColor }}>Education</h3> 
+                    <div style={{ fontWeight: 600, color: bodyColor }}>{data.education?.degree}</div> 
+                    <div className="meta" style={{ color: bodyColor }}>{data.education?.school} • {data.education?.year}</div> 
                     {Array.isArray(data.education?.coursework) && data.education.coursework.length > 0 && (
-                        <div style={{ marginTop: 8, fontSize: 13 }}>{data.education.coursework.join(", ")}</div>
+                        <div style={{ marginTop: 8, fontSize: 13, color: bodyColor }}>{data.education.coursework.join(", ")}</div> 
                     )}
                 </section>
             ),
@@ -70,9 +72,9 @@ export function usePagination(data, margins) {
             splittable: false,
             render: (
                 <section className="section">
-                    <h3>Involvement</h3>
-                    <div style={{ fontWeight: 600 }}>{data.involvement?.title}</div>
-                    <div className="meta">{data.involvement?.organization} • {data.involvement?.date}</div>
+                    <h3 style={{ color: titleColor }}>Involvement</h3> 
+                    <div style={{ fontWeight: 600, color: bodyColor }}>{data.involvement?.title}</div> 
+                    <div className="meta" style={{ color: bodyColor }}>{data.involvement?.organization} • {data.involvement?.date}</div> 
                 </section>
             ),
         });
@@ -82,7 +84,7 @@ export function usePagination(data, margins) {
     blocks.push({
         key: "experience_header",
         splittable: false,
-        render: <section className="section"><h4>Experience</h4></section>,
+        render: <section className="section"><h4 style={{ color: titleColor }}>Experience</h4></section>, // Apply titleColor
     });
 
     (data.experience || []).forEach((job, idx) => {
@@ -91,14 +93,14 @@ export function usePagination(data, margins) {
             splittable: true,
             meta: { job, idx },
             render: (
-                <div className="job" data-job-idx={idx} style={{ marginBottom: 12 }}>
+                <div className="job" data-job-idx={idx} style={{ marginBottom: 12, color: bodyColor }}> 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                        <div style={{ fontWeight: 600 }}>{job.title}{job.company ? ` • ${job.company}` : ''}</div>
-                        <div className="meta">{[job.date, job.location].filter(Boolean).join(" • ")}</div>
+                        <div style={{ fontWeight: 600, color: titleColor }}>{job.title}{job.company ? ` • ${job.company}` : ''}</div> 
+                        <div className="meta" style={{ color: bodyColor }}>{[job.date, job.location].filter(Boolean).join(" • ")}</div> 
                     </div>
                     {Array.isArray(job.points) && job.points.length > 0 && (
                         <ul>
-                            {job.points.map((p, i) => <li key={i} data-job-idx-point={idx + "," + i} style={{ marginBottom: 6 }}>{p}</li>)}
+                            {job.points.map((p, i) => <li key={i} data-job-idx-point={idx + "," + i} style={{ marginBottom: 6, color: bodyColor }}>{p}</li>)}
                         </ul>
                     )}
                 </div>
@@ -107,7 +109,7 @@ export function usePagination(data, margins) {
     });
 
     return blocks;
-  }, [data]);
+  }, [data, titleColor, bodyColor]); // Add titleColor and bodyColor to dependencies
 
   useEffect(() => {
     if (!measureRef.current || blocks.length === 0) return;
