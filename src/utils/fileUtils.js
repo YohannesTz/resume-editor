@@ -8,14 +8,14 @@ export function exportJSON(data) {
   URL.revokeObjectURL(url);
 }
 
-export function importJSON(file, callback) {
+export function importJSON(file, dispatch) {
   const reader = new FileReader();
   reader.onload = (e) => {
     try {
       const parsed = JSON.parse(e.target.result);
-      callback(parsed);
+      dispatch({ type: 'SET_DATA', payload: parsed });
     } catch {
-      alert('Invalid JSON');
+      dispatch({ type: 'SET_LOAD_ERROR', payload: 'Invalid JSON file' });
     }
   };
   reader.readAsText(file);

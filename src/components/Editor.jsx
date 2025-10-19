@@ -58,12 +58,58 @@ const Editor = ({ data, dispatch, zoom, margins, lineHeight, letterSpacing, base
 
             {activeTab === 'Data' && (
                 <div>
-                    <label className="btn ghost" style={{ cursor: "pointer", display: 'block', width: '100%', padding: '20px 0', textAlign: 'center', marginTop: '12px' }}>
+                    <label className="btn ghost" style={{
+                        cursor: "pointer",
+                        display: 'block',
+                        width: '100%',
+                        padding: '20px 0',
+                        textAlign: 'center',
+                        marginBottom: '12px'
+                    }}>
                         Import JSON
-                        <input type="file" accept=".json,application/json" style={{ display: "none" }} onChange={e => {
-                            if (e.target.files && e.target.files[0]) importJSON(e.target.files[0], (newData) => dispatch({ type: 'SET_DATA', payload: newData }));
-                        }} />
+                        <input
+                            type="file"
+                            accept=".json,application/json"
+                            style={{ display: "none" }}
+                            onChange={e => {
+                                if (e.target.files && e.target.files[0]) importJSON(e.target.files[0], dispatch);
+                            }}
+                        />
                     </label>
+
+                    <div style={{ display: 'flex', gap: '10px', marginBottom: '12px' }}>
+                        <button
+                            className="btn"
+                            style={{ flex: 1, display: 'block', padding: '20px 0' }}
+                            onClick={async () => {
+                                const resp = await fetch('demoData.json');
+                                const json = await resp.json();
+                                const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+                                const url = URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = 'demoData.json';
+                                a.click();
+                                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                            }}
+                        >
+                            Download Sample JSON
+                        </button>
+
+                        <button
+                            className="btn"
+                            style={{ flex: 1, display: 'block', padding: '20px 0' }}
+                            onClick={async () => {
+                                const resp = await fetch('defaultData.json');
+                                const json = await resp.json();
+                                dispatch({ type: 'SET_DATA', payload: json });
+                            }}
+                        >
+                            Load Sample JSON
+                        </button>
+                    </div>
+
+
                     <label>Name</label>
                     <input value={data.name || ""} onChange={e => updateField("name", e.target.value)} />
 

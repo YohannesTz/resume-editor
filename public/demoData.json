@@ -1,0 +1,33 @@
+{
+    "name": "",
+    "location": "",
+    "email": "",
+    "phone": "",
+    "links": {
+        "linkedin": "",
+        "website": ""
+    },
+    "skills": [],
+    "experience": [
+        {
+            "title": "",
+            "company": "",
+            "date": "",
+            "location": "",
+            "points": []
+        }
+    ],
+    "education": {
+        "degree": "",
+        "school": "",
+        "location": "",
+        "year": "",
+        "coursework": []
+    },
+    "involvement": {
+        "title": "",
+        "organization": "",
+        "date": "",
+        "points": []
+    }
+}
