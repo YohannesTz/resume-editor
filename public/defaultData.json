@@ -1,0 +1,113 @@
+{
+    "name": "Alex Johnson",
+    "location": "San Francisco, CA, USA",
+    "email": "alex.johnson@example.com",
+    "phone": "+1 (555) 123-4567",
+    "links": {
+        "linkedin": "https://www.linkedin.com/in/alexjohnson",
+        "website": "https://alexjohnson.dev"
+    },
+    "skills": [
+        "Android",
+        "Kotlin",
+        "Java",
+        "MVVM",
+        "Clean Architecture",
+        "React",
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "PostgreSQL",
+        "Docker",
+        "CI/CD"
+    ],
+    "experience": [
+        {
+            "title": "Senior Android Engineer",
+            "company": "MapFlow Technologies",
+            "date": "Jul 2024 - Present",
+            "location": "Remote",
+            "points": [
+                "Led the development of a navigation SDK for logistics clients, improving route accuracy by 20%.",
+                "Implemented an offline caching system for map tiles, reducing network usage by 35%.",
+                "Collaborated with backend engineers to design RESTful APIs for live tracking and geofencing.",
+                "Mentored junior developers and introduced Kotlin coroutines and Flow for reactive updates."
+            ]
+        },
+        {
+            "title": "Mobile Developer",
+            "company": "DeliverIt Systems",
+            "date": "Mar 2023 - Jun 2024",
+            "location": "Remote",
+            "points": [
+                "Built and maintained delivery and driver apps using Jetpack Compose and Firebase.",
+                "Integrated Google Maps SDK and Directions API for route optimization.",
+                "Improved real-time driver tracking accuracy and reliability by optimizing location services.",
+                "Reduced app crash rate by 40% through proactive monitoring and bug triage."
+            ]
+        },
+        {
+            "title": "Software Engineer",
+            "company": "NextCore Labs",
+            "date": "Jan 2022 - Feb 2023",
+            "location": "New York, NY",
+            "points": [
+                "Developed internal web tools using React and Express for product data management.",
+                "Worked closely with designers to implement responsive UI components.",
+                "Improved CI/CD pipelines using Docker and GitHub Actions, cutting deployment time by 50%.",
+                "Collaborated with cross-functional teams to deliver end-to-end features in an Agile setup."
+            ]
+        },
+        {
+            "title": "Backend Developer Intern",
+            "company": "TechNova Solutions",
+            "date": "May 2021 - Dec 2021",
+            "location": "Remote",
+            "points": [
+                "Implemented backend REST APIs using Node.js and Express with PostgreSQL.",
+                "Wrote unit tests to ensure API reliability and maintainability.",
+                "Designed and documented APIs using Swagger/OpenAPI for client integrations."
+            ]
+        },
+        {
+            "title": "Freelance Developer",
+            "company": "Upwork",
+            "date": "Jun 2020 - Present",
+            "location": "Remote",
+            "points": [
+                "Delivered multiple client projects involving mobile apps and web dashboards.",
+                "Collaborated directly with clients to translate Figma designs into functional apps.",
+                "Maintained long-term relationships by providing app updates and feature improvements."
+            ]
+        }
+    ],
+    "education": {
+        "degree": "B.Sc. in Computer Science",
+        "school": "TechBridge University",
+        "location": "Boston, MA",
+        "year": "2023",
+        "coursework": [
+            "Data Structures and Algorithms",
+            "Object-Oriented Programming",
+            "Database Systems",
+            "Web Development",
+            "Operating Systems",
+            "Networking",
+            "Software Engineering",
+            "Artificial Intelligence",
+            "Cybersecurity",
+            "Mobile Development"
+        ]
+    },
+    "involvement": {
+        "title": "Volunteer Web Developer",
+        "organization": "Code4Change Foundation",
+        "date": "Oct 2021 - May 2023",
+        "points": [
+            "Developed a responsive website to support digital literacy programs for underprivileged youth.",
+            "Built donation and event registration systems using React and Firebase.",
+            "Worked with a small volunteer team to improve accessibility and performance.",
+            "Helped organize local coding workshops to encourage community involvement in tech."
+        ]
+    }
+}
