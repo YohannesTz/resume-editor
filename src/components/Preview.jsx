@@ -33,9 +33,12 @@ const Preview = ({
     <>
       <MeasureContainer />
       {pages.map((page, i) => (
-        <article key={i} className="preview-container" style={pageStyle}>
-          {page.map(block => block.render)}
-        </article>
+        <React.Fragment key={i}>
+          <article className="preview-container" style={pageStyle}>
+            {page.map(block => block.render)}
+          </article>
+          {i < pages.length - 1 && <div style={{ height: 1, background: '#ccc', width: '210mm', margin: '32px auto' }} />}
+        </React.Fragment>
       ))}
     </>
   );

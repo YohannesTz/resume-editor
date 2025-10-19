@@ -28,6 +28,7 @@ export async function loadDefaultData(dispatch) {
     dispatch({ type: 'SET_LOAD_ERROR', payload: null });
     try {
         const resp = await fetch('/defaultData.json', { cache: 'no-store' });
+        console.log('Response status:', resp.status);
         if (!resp.ok) {
             dispatch({ type: 'SET_IS_LOADING', payload: false });
             dispatch({ type: 'SET_DATA', payload: null });
@@ -36,6 +37,7 @@ export async function loadDefaultData(dispatch) {
         const json = await resp.json();
         dispatch({ type: 'SET_DATA', payload: json });
     } catch {
+        console.error('Error loading defaultData.json');
         dispatch({ type: 'SET_LOAD_ERROR', payload: 'Failed to load defaultData.json' });
     } finally {
         dispatch({ type: 'SET_IS_LOADING', payload: false });

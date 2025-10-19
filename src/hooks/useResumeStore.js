@@ -7,6 +7,7 @@ const initialState = {
   isLoadingData: true,
   loadError: null,
   zoom: 1,
+  pan: { x: 0, y: 0 }, // New state for pan
   margins: { top: 40, right: 40, bottom: 40, left: 40 },
   lineHeight: 1.3,
   letterSpacing: 0,

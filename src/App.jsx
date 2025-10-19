@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import Editor from './components/Editor';
 import Preview from './components/Preview';
 import { useResumeStore } from './hooks/useResumeStore';
@@ -8,12 +8,55 @@ import { exportJSON, importJSON, loadDefaultData } from './utils/fileUtils';
 
 function App() {
   const { state, dispatch } = useResumeStore();
-  const { data, isLoadingData, zoom, margins, lineHeight, letterSpacing, baseFontSize, fontFamily } = state;
+  const { data, isLoadingData, zoom, pan, margins, lineHeight, letterSpacing, baseFontSize, fontFamily } = state;
   const previewRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => previewRef.current,
   });
-  const { width: leftPanelWidth, isDragging, handleMouseDown } = useResizablePanel(650, 250, window.innerWidth - 400);
+  const { width: leftPanelWidth, isDragging, handleMouseDown: handleResizeMouseDown } = useResizablePanel(650, 250, window.innerWidth - 400);
+
+  const [isPanning, setIsPanning] = useState(false);
+  const [startPan, setStartPan] = useState({ x: 0, y: 0 });
+
+  const handleWheel = useCallback((e) => {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      const scaleAmount = 0.1;
+      const newZoom = e.deltaY > 0 ? Math.max(0.5, zoom - scaleAmount) : Math.min(2, zoom + scaleAmount);
+      dispatch({ type: 'SET_ZOOM', payload: newZoom });
+    }
+  }, [zoom, dispatch]);
+
+  const handlePanMouseDown = useCallback((e) => {
+    if (e.ctrlKey) {
+      setIsPanning(true);
+      setStartPan({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    }
+  }, [pan]);
+
+  const handlePanMouseMove = useCallback((e) => {
+    if (isPanning) {
+      dispatch({ type: 'SET_PAN', payload: { x: e.clientX - startPan.x, y: e.clientY - startPan.y } });
+    }
+  }, [isPanning, startPan, dispatch]);
+
+  const handlePanMouseUp = useCallback(() => {
+    setIsPanning(false);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('mousedown', handlePanMouseDown);
+    window.addEventListener('mousemove', handlePanMouseMove);
+    window.removeEventListener('mouseup', handlePanMouseUp);
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('mousedown', handlePanMouseDown);
+      window.removeEventListener('mousemove', handlePanMouseMove);
+      window.removeEventListener('mouseup', handlePanMouseUp);
+    };
+  }, [handleWheel, handlePanMouseDown, handlePanMouseMove, handlePanMouseUp]);
 
   useEffect(() => {
     loadDefaultData(dispatch);
@@ -32,10 +75,10 @@ function App() {
           <div style={{ fontSize: 14, color: '#6b7280' }}>Loading defaultData.json…</div>
         )}
         {!isLoadingData && !data && (
-          <div>
+          <div style={{ padding: '20px', textAlign: 'center' }}>
             <p style={{ fontSize: 14, color: '#6b7280' }}>No data loaded. Load a JSON file to begin.</p>
-            <label className="btn" style={{ cursor: "pointer" }}>
-              Load JSON
+            <label className="btn" style={{ cursor: "pointer", display: 'block', width: '100%', padding: '20px 0' }}>
+              Import Resume Data
               <input type="file" accept=".json,application/json" style={{ display: "none" }} onChange={e => {
                 if (e.target.files && e.target.files[0]) importJSON(e.target.files[0], (newData) => dispatch({ type: 'SET_DATA', payload: newData }));
               }} />
@@ -58,12 +101,6 @@ function App() {
         {data && (
           <div style={{ marginTop: 12 }}>
             <button className="btn" onClick={() => exportJSON(data)}>Export JSON</button>
-            <label className="btn ghost" style={{ cursor: "pointer" }}>
-              Import JSON
-              <input type="file" accept=".json,application/json" style={{ display: "none" }} onChange={e => {
-                if (e.target.files && e.target.files[0]) importJSON(e.target.files[0], (newData) => dispatch({ type: 'SET_DATA', payload: newData }));
-              }} />
-            </label>
           </div>
         )}
 
@@ -77,7 +114,7 @@ function App() {
       </aside>
       <div
         className="resize-handle"
-        onMouseDown={handleMouseDown}
+        onMouseDown={handleResizeMouseDown}
         style={{
           cursor: 'col-resize',
           width: '4px',
@@ -102,9 +139,8 @@ function App() {
         style={{
           flex: 1,
           overflow: 'auto',
-          background: '#ececec',
+          background: '#f3f4f6',
           minWidth: 0,
-          minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -112,7 +148,7 @@ function App() {
           position: 'relative',
         }}
       >
-        <div className="preview" ref={previewRef} style={{ width: 'auto', transform: `scale(${zoom})`, transformOrigin: 'top center' }}>
+        <div ref={previewRef} style={{ width: 'auto', transform: `scale(${zoom}) translate(${pan.x}px, ${pan.y}px)`, transformOrigin: 'top center' }}>
           {data ? (
             <Preview
               data={data}
