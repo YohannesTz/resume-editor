@@ -20,8 +20,6 @@ const Preview = React.forwardRef(({
 		paddingBottom: margins.bottom,
 		paddingLeft: margins.left,
 		background: 'white',
-		marginBottom: 32,
-		marginTop: 32,
 		fontFamily,
 		fontSize: baseFontSize,
 		lineHeight,
@@ -34,12 +32,17 @@ const Preview = React.forwardRef(({
 			<MeasureContainer />
 			<div ref={ref}> {/* Added this div and ref */}
 				{pages.map((page, i) => (
-					<React.Fragment key={i}>
-						<article className="preview-container" style={pageStyle}>
-							{page.map(block => block.render)}
-						</article>
-						{i < pages.length - 1 && <div style={{ height: 1, background: '#ccc', width: '210mm', margin: '32px auto' }} />}
-					</React.Fragment>
+					<article
+						key={i}
+						className="preview-container"
+						style={{
+							...pageStyle,
+							pageBreakAfter: i < pages.length - 1 ? 'always' : 'auto',
+							marginBottom: i < pages.length - 1 ? '32px' : '0', // Add margin between pages in preview
+						}}
+					>
+						{page.map(block => block.render)}
+					</article>
 				))}
 			</div>
 		</>
