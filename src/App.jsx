@@ -69,8 +69,10 @@ function App() {
 			className="controls"
 			style={{ width: `${leftPanelWidth}px`, minWidth: 250, maxWidth: 600, height: '100vh', overflow: 'auto', flexShrink: 0 }}
 		>
-			<h2 style={{ margin: 0 }}>Resume Editor</h2>
-			<p style={{ color: "#6b7280", fontSize: 13 }}>Edit fields below — preview updates live.</p>
+							<div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+								<img src="https://img.icons8.com/clouds/100/resume.png" alt="Resume icon" style={{ width: '30px', height: '30px' }} />
+								<h2 style={{ margin: 0 }}>Resume Editor</h2>
+							</div>			<p style={{ color: "#6b7280", fontSize: 13 }}>Edit fields below — preview updates live.</p>
 
 			{isLoadingData && (
 				<div style={{ fontSize: 14, color: '#6b7280' }}>Loading defaultData.json…</div>
